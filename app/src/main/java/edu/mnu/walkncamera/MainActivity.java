@@ -15,13 +15,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.Manifest;
-
-import java.io.File;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -33,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     // 현재 걸음 수
     int currentSteps = 0;
 
-    File file;
+    boolean myEvent=true;
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
@@ -45,6 +44,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED){
 
             requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 0);
+        }
+
+        if(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS) == PackageManager.PERMISSION_DENIED){
+
+            requestPermissions(new String[]{Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS}, 0);
         }
         stepCountView = findViewById(R.id.stepCountView);
         resetButton = findViewById(R.id.resetButton);
@@ -65,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (stepCountSensor == null) {
             Toast.makeText(this, "No Step Sensor", Toast.LENGTH_SHORT).show();
         }else {
-            Toast.makeText(this,"Ok, STEP SENSOR",Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"STEP SENSOR is ON",Toast.LENGTH_LONG).show();
         }
 
         // 리셋 버튼 추가 - 리셋 기능
@@ -75,17 +80,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 // 현재 걸음수 초기화
                 currentSteps = 0;
                 stepCountView.setText(String.valueOf(currentSteps));
+                myEvent = true;
 
             }
         });
 
     }
 
-    public void capture(){
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-        startActivity(intent);
-    }
+
     public void onStart() {
         super.onStart();
         if(stepCountSensor !=null) {
@@ -96,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             // - SENSOR_DELAY_GAME: 20,000 초 딜레이
             // - SENSOR_DELAY_FASTEST: 딜레이 없음
             //
-            sensorManager.registerListener(this,stepCountSensor,SensorManager.SENSOR_DELAY_UI);
+            sensorManager.registerListener(this,stepCountSensor,SensorManager.SENSOR_DELAY_FASTEST);
         }
     }
 
@@ -105,19 +107,31 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent event) {
         // 걸음 센서 이벤트 발생시
-        if(event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR){
 
-            if(event.values[0]==1.0f){
-                // 센서 이벤트가 발생할때 마다 걸음수 증가
-                currentSteps++;
-                stepCountView.setText(String.valueOf(currentSteps));
-                capture();
+        if(myEvent==true) {
+            if (event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
+
+                if (event.values[0] == 1.0f) {
+                    // 센서 이벤트가 발생할때 마다 걸음수 증가
+                    currentSteps++;
+                    stepCountView.setText(String.valueOf(currentSteps));
+                    Log.d("walk", "step");
+
+                    Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                    startActivity(intent);
+                    myEvent = false;
+
+                }
+
             }
-
         }
 
     }
 
+    @Override
+    public void finish() {
+        super.finish();
+    }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
