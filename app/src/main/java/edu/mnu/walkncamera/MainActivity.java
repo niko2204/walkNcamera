@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -34,7 +35,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     boolean myEvent=true;
 
-    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,5 +136,31 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
+    }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                Log.d("KeyUP Event", "RIGHT down");
+                if(myEvent==true){
+                    Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                    startActivity(intent);
+                    myEvent = false;
+                }
+                return true;
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+                Log.d("KeyUP Event", "LEFT down");
+                return true;
+            case KeyEvent.KEYCODE_DPAD_CENTER:
+                Log.d("KeyUP Event", "CENTER down");
+                return true;
+
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        return super.onKeyUp(keyCode, event);
     }
 }
