@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     boolean myEvent=true;
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
