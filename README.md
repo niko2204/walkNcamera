@@ -188,6 +188,33 @@ public void onStart() {
 
     }
 ~~~
+* Vuzix M400의 물리버튼 3개의 입력을 받아들이는 코드
+~~~java
+public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                Log.d("KeyUP Event", "RIGHT down");
+                if(myEvent==true){
+                    Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                    startActivity(intent);
+                    myEvent = false;
+                }
+                return true;
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+                Log.d("KeyUP Event", "LEFT down");
+                return true;
+            case KeyEvent.KEYCODE_DPAD_CENTER:
+                Log.d("KeyUP Event", "CENTER down");
+                return true;
 
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        return super.onKeyUp(keyCode, event);
+    }
+~~~
 # 참고자료
 * 안드로이드 부팅 후 앱 시작 https://blog.naver.com/effortive_rich/223130649521
