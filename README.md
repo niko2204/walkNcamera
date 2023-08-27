@@ -4,7 +4,7 @@
 * 따라서 smart glass의 IMU센서를 이용하여 움직임을 파악하고, 특정 앱을 실행하는 코드를 개발한다.
 
 # 대상 기기
-* Vuzix M400
+* Vuzix M400 https://www.vuzix.com/
 
 # 기능
 * 안드로이드 기기 부팅시 자동으로 앱 실행
