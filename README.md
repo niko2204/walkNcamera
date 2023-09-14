@@ -224,3 +224,6 @@ public boolean onKeyDown(int keyCode, KeyEvent event) {
 ~~~
 # 참고자료
 * 안드로이드 부팅 후 앱 시작 https://blog.naver.com/effortive_rich/223130649521
+
+# 주의사항
+* 앱을 설치 후 overlay를 허용해야 함
